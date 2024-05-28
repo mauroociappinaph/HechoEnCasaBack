@@ -8,6 +8,7 @@ const ProductsRoutes = require("../backend/routes/ProductsRoutes.js");
 
 const app = express();
 
+
 dotenv.config();
 
 connectDB();
@@ -15,7 +16,7 @@ connectDB();
 const origin =
   process.env.NODE_ENV === "production"
     ? "https://hechoencasa-production.up.railway.app"
-    : "http://localhost:3000";
+    : "http://localhost:4000";
 
 app.use(
   cors({

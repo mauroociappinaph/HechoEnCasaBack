@@ -5,6 +5,10 @@ const EmprendedorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  last_name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -12,7 +16,6 @@ const EmprendedorSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: true,
   },
   address: {
     type: String,
@@ -26,18 +29,16 @@ const EmprendedorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  company_name: {
+  business_name: {
     type: String,
     required: true,
   },
   company_address: {
     type: String,
-    required: true,
   },
   products: {
     type: Map,
     of: mongoose.Schema.Types.Mixed,
-    required: true,
   },
   createdAt: {
     type: Date,
