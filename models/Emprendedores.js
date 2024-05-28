@@ -44,7 +44,7 @@ const EmprendedorSchema = new mongoose.Schema({
     type: String,
     default: generarId,
   },
-  confirm: {
+  confirmado: {
     type: Boolean,
     default: false,
   },

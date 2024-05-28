@@ -16,7 +16,6 @@ const createEmprendedor = async (req, res) => {
   const { password, repeat_password, email, ...rest } = req.body;
 
   if (password !== repeat_password) {
-   
     console.log("Passwords do not match:", password, repeat_password);
     return res.status(400).json({ error: "Passwords do not match" });
   }
@@ -51,7 +50,41 @@ const createEmprendedor = async (req, res) => {
   }
 };
 
-module.exports = createEmprendedor;
+const getConfirmar = async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const emprendedorConfirmar = await Emprendedor.findOne({ token });
+
+    if (!emprendedorConfirmar) {
+      return res.status(404).json({ message: "Emprendedor not found" });
+    }
+
+    console.log("Emprendedor encontrado:", emprendedorConfirmar);
+
+    emprendedorConfirmar.token = null;
+    emprendedorConfirmar.confirmado = true;
+
+    const updatedEmprendedor = await emprendedorConfirmar.save();
+    console.log("Emprendedor actualizado:", updatedEmprendedor);
+
+    res.json({ msg: "Emprendedor confirmado" });
+  } catch (err) {
+    console.log("Error al confirmar emprendedor:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+const postAutenticar = async (req, res) => {
+  const { email } = req.body;
+
+  const emprendedor = await Emprendedor.findOne({ email });
+
+  if (!emprendedor) {
+    res.json({ message: "Autenticar emprendedor" });
+    return res.status(404).json({ message: "Emprendedor no existe" });
+  }
+};
 
 const getEmprendedor = async (req, res) => {
   try {
@@ -110,4 +143,6 @@ module.exports = {
   getEmprendedors,
   updateEmprendedor,
   deleteEmprendedor,
+  getConfirmar,
+  postAutenticar,
 };
