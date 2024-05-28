@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const generarId = require("../helpers/generarId");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -27,7 +28,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
+  token: {
+    type: String,
+    default: generarId,
+  },
+  confirm: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

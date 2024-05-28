@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const generarId = require("../helpers/generarId");
 
 const EmprendedorSchema = new mongoose.Schema({
   name: {
@@ -38,6 +39,14 @@ const EmprendedorSchema = new mongoose.Schema({
   products: {
     type: Map,
     of: mongoose.Schema.Types.Mixed,
+  },
+  token: {
+    type: String,
+    default: generarId,
+  },
+  confirm: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,
