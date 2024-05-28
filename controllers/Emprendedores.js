@@ -76,13 +76,25 @@ const getConfirmar = async (req, res) => {
 };
 
 const postAutenticar = async (req, res) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
-  const emprendedor = await Emprendedor.findOne({ email });
+  try {
+    const emprendedor = await Emprendedor.findOne({ email });
 
-  if (!emprendedor) {
-    res.json({ message: "Autenticar emprendedor" });
-    return res.status(404).json({ message: "Emprendedor no existe" });
+    if (!emprendedor) {
+      return res.status(404).json({ message: "Emprendedor no existe" });
+    }
+
+    const isMatch = await bcrypt.compare(password, emprendedor.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: "Contraseña incorrecta" });
+    }
+
+    res.status(200).json({ message: "Autenticación exitosa", emprendedor });
+  } catch (err) {
+    console.log("Error al autenticar emprendedor:", err);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
