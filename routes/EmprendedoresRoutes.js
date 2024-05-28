@@ -15,4 +15,11 @@ const {
   deleteEmprendedor,
 } = require("../controllers/Emprendedores");
 
+
+router.post("/", createEmprendedor);
+router.get("/:id", getEmprendedor);
+router.get("/", getEmprendedors);
+router.put("/:id", updateEmprendedor);
+router.delete("/:id", deleteEmprendedor);
+
 module.exports = router;
