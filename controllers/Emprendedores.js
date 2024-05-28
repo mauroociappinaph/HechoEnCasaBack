@@ -82,7 +82,12 @@ const postAutenticar = async (req, res) => {
     const emprendedor = await Emprendedor.findOne({ email });
 
     if (!emprendedor) {
-      return res.status(404).json({ message: "Emprendedor no existe" });
+      return res.status(404).json({ message: "Cuenta no confirmada" });
+    }
+
+    if (!emprendedor.confirmado) {
+      const error = new Error(`Emprendedor no confirmado`);
+      return res.status(403).json({ msg: error.message });
     }
 
     const isMatch = await bcrypt.compare(password, emprendedor.password);
