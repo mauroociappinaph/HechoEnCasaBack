@@ -12,11 +12,11 @@ const UserSchema = new mongoose.Schema(
     },
     fecha: {
       type: Date,
-      required: true,
     },
     productos: {
       type: Map,
       of: mongoose.Schema.Types.Mixed,
+      
     },
     emprendedor: {
       type: mongoose.Schema.Types.ObjectId,
