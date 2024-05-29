@@ -197,11 +197,16 @@ const nuevoPassword = async (req, res) => {
       return res.status(400).json({ msg: error.message });
     }
     emprendedor.token = null;
-    emprendedor.password = password;
+
+    // Hashear la contraseña
+    const salt = await bcrypt.genSalt(10);
+    emprendedor.password = await bcrypt.hash(password, salt);
+
     await emprendedor.save();
     res.json({ msg: "Contraseña actualizada" });
-  } catch {
+  } catch (error) {
     console.log(error);
+    res.status(500).json({ msg: "Hubo un error en el servidor" });
   }
 };
 
