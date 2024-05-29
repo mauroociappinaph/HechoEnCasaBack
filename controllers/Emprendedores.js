@@ -1,6 +1,8 @@
 const Emprendedor = require("../models/Emprendedores");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
+const generarJWT = require("../helpers/generarJWT");
+const generarId = require("../helpers/generarId");
 
 const createEmprendedor = async (req, res) => {
   // Log del cuerpo de la solicitud
@@ -96,23 +98,22 @@ const postAutenticar = async (req, res) => {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
-    res.status(200).json({ message: "Autenticación exitosa", emprendedor });
+    const token = generarJWT(emprendedor.id); //
+
+    return res.status(200).json({
+      message: "Autenticación exitosa",
+      emprendedor,
+      token,
+    });
   } catch (err) {
     console.log("Error al autenticar emprendedor:", err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 };
 
-const getEmprendedor = async (req, res) => {
-  try {
-    const emprendedor = await Emprendedor.findById(req.params.id);
-    if (!emprendedor) {
-      return res.status(404).json({ message: "Emprendedor not found" });
-    }
-    return res.status(200).json({ emprendedor });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
+const getEmprendedorPerfil = async (req, res) => {
+  const { emprendedor } = req;
+  res.json({ perfilEmprendedor: emprendedor });
 };
 
 const getEmprendedors = async (req, res) => {
@@ -154,12 +155,65 @@ const deleteEmprendedor = async (req, res) => {
   }
 };
 
+const olvidePassword = async (req, res) => {
+  const { email } = req.body;
+  console.log(email);
+  try {
+    const existeEmprendedor = await Emprendedor.findOne({ email });
+    if (!existeEmprendedor) {
+      const error = new Error(`Email no encontrado`);
+      return res.status(400).json({ msg: error.message });
+    }
+    existeEmprendedor.token = generarId();
+    await existeEmprendedor.save();
+    res.status(200).json({
+      msg: "Hemos enviado un correo con las instrucciones para recuperar su contraseña",
+    });
+  } catch (err) {
+    console.log("Error al olvidar password:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+const comprobarToken = async (req, res) => {
+  const { token } = req.params;
+  console.log(token);
+  const tokenValido = await Emprendedor.findOne({ token });
+  if (!tokenValido) {
+    const error = new Error(`Token no encontrado`);
+    return res.status(400).json({ msg: error.message });
+  } else {
+    res.status(200).json({ msg: "Token válido" });
+  }
+};
+
+const nuevoPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+  try {
+    const emprendedor = await Emprendedor.findOne({ token });
+    if (!emprendedor) {
+      const error = new Error(`Hubo un error`);
+      return res.status(400).json({ msg: error.message });
+    }
+    emprendedor.token = null;
+    emprendedor.password = password;
+    await emprendedor.save();
+    res.json({ msg: "Contraseña actualizada" });
+  } catch {
+    console.log(error);
+  }
+};
+
 module.exports = {
   createEmprendedor,
-  getEmprendedor,
+  getEmprendedorPerfil,
   getEmprendedors,
   updateEmprendedor,
   deleteEmprendedor,
   getConfirmar,
   postAutenticar,
+  olvidePassword,
+  comprobarToken,
+  nuevoPassword,
 };
