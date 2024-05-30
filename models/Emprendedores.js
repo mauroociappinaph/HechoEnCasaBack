@@ -25,7 +25,9 @@ const EmprendedorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
+  repeat_password: {
+    type: String,
+  },
   city: {
     type: String,
     required: true,

@@ -10,17 +10,24 @@ const app = express();
 dotenv.config();
 connectDB();
 
-const origin =
-  process.env.NODE_ENV === "production"
-    ? "https://hechoencasa-production.up.railway.app"
-    : "http://localhost:4000";
+const dominiosPermitidos = ["http://localhost:4000", "https://hechoencasa-production.up.railway.app" , "http://localhost:3000"];
 
-app.use(
-  cors({
-    origin: origin,
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) {
+      // Handle missing origin cases (optional)
+      return callback(null, true);
+    }
+
+    if (dominiosPermitidos.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Origin not allowed by CORS"), false);
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
