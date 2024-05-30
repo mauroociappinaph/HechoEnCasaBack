@@ -12,8 +12,8 @@ connectDB();
 
 const dominiosPermitidos = [
   "http://localhost:4000",
-  "https://hechoencasa-production.up.railway.app",
-  "http://localhost:3000",
+  process.env.DEPLOYD_URL,
+  process.env.FRONTEND_URL,
 ];
 
 const corsOptions = {
