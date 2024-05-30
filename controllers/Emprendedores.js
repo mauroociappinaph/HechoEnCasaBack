@@ -3,6 +3,7 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const generarJWT = require("../helpers/generarJWT");
 const generarId = require("../helpers/generarId");
+const emailRegistro = require("../helpers/emailRegistro");
 
 const createEmprendedor = async (req, res) => {
   // Log del cuerpo de la solicitud
@@ -15,7 +16,7 @@ const createEmprendedor = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { password, repeat_password, email, ...rest } = req.body;
+  const { password, name, repeat_password, email, ...rest } = req.body;
 
   if (password !== repeat_password) {
     console.log("Passwords do not match:", password, repeat_password);
@@ -36,11 +37,19 @@ const createEmprendedor = async (req, res) => {
 
     // Crear nuevo emprendedor con la contraseña hasheada
     const emprendedor = new Emprendedor({
+      name,
       email,
       password: hashedPassword,
       ...rest,
     });
     const emprendedorSaved = await emprendedor.save();
+
+    // Enviar correo de confirmación
+    emailRegistro({
+      email,
+      nombre: name,
+      token: emprendedorSaved.token,
+    });
 
     // Log de éxito al guardar
     console.log("Emprendedor creado:", emprendedorSaved);
