@@ -58,7 +58,7 @@ const emailOlvidePassword = async (datos) => {
         <div class="container">
           <h1 class="title">¡Hola ${name}!</h1>
           <p class="content">Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para hacerlo:</p>
-          <p class="content"><a class="button" href="${process.env.FRONTEND_URL}/OlvidePassword?token=${token}">Restablecer contraseña</a></p>
+          <p class="content"><a class="button" href="${process.env.FRONTEND_URL}/NuevoPassword?token=${token}">Restablecer contraseña</a></p>
         </div>
       </body>
       </html>
