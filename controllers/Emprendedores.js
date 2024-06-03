@@ -87,6 +87,15 @@ const getConfirmar = async (req, res) => {
   }
 };
 
+/**
+ *! Autentica un emprendedor.
+ * Verifica las credenciales proporcionadas en la solicitud (email y contraseña),
+ * y responde con un token JWT si la autenticación es exitosa.
+ *
+ * @param {Object} req - La solicitud HTTP.
+ * @param {Object} res - La respuesta HTTP.
+ * @returns {Object} - La respuesta JSON con un mensaje de éxito o un mensaje de error.
+ */
 const postAutenticar = async (req, res) => {
   const { email, password } = req.body;
 
@@ -135,6 +144,13 @@ const getEmprendedors = async (req, res) => {
   }
 };
 
+/**
+ * Actualiza un emprendedor con el ID proporcionado en la base de datos con los datos del cuerpo de la solicitud.
+ *
+ * @param {Object} req - El objeto de solicitud que contiene el ID del emprendedor a actualizar y los nuevos datos.
+ * @param {Object} res - El objeto de respuesta utilizado para enviar el emprendedor actualizado o un mensaje de error.
+ * @return {Promise<Object>} - Una promesa que resuelve en el emprendedor actualizado o un mensaje de error.
+ */
 const updateEmprendedor = async (req, res) => {
   try {
     const emprendedor = await Emprendedor.findByIdAndUpdate(
