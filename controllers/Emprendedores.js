@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const generarJWT = require("../helpers/generarJWT");
 const generarId = require("../helpers/generarId");
 const emailRegistro = require("../helpers/emailRegistro");
+const emailOlvidePassword = require("../helpers/emailOlvidePassword");
 
 const createEmprendedor = async (req, res) => {
   // Log del cuerpo de la solicitud
@@ -175,6 +176,14 @@ const olvidePassword = async (req, res) => {
     }
     existeEmprendedor.token = generarId();
     await existeEmprendedor.save();
+    //Enviar email con instrucciones
+
+    emailOlvidePassword({
+      email,
+      nombre: existeEmprendedor.name,
+      token: existeEmprendedor.token,
+    });
+
     res.status(200).json({
       msg: "Hemos enviado un correo con las instrucciones para recuperar su contraseña",
     });
