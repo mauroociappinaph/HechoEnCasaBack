@@ -225,10 +225,12 @@ const nuevoPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
   try {
+    if (!token) {
+      throw new Error('Token faltante');
+    }
     const emprendedor = await Emprendedor.findOne({ token });
     if (!emprendedor) {
-      const error = new Error(`Hubo un error`);
-      return res.status(400).json({ msg: error.message });
+      throw new Error(`Token no encontrado`);
     }
     emprendedor.token = null;
 
@@ -240,7 +242,7 @@ const nuevoPassword = async (req, res) => {
     res.json({ msg: "Contraseña actualizada" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ msg: "Hubo un error en el servidor" });
+    res.status(500).json({ msg: error.message });
   }
 };
 
